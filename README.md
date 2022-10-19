@@ -36,12 +36,3 @@ Le code est contenu dans le dossier '/app' :
 |models.py|Outils de distances pour les séries temporelles|
 |compare.py|Fonctions permettant de comparer les résultats et temps d'exécutions|
 |utils.py|Diverses fonctions utilitaires| 
-
-
-
-## Interface
-
-Pour lancer le logiciel, exécuter la commande
-
-    python main.py
-
