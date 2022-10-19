@@ -6,40 +6,27 @@ import matplotlib.pyplot as plt
 import random
 import time
 
-def euclideanDistance(p1: npt.NDArray, p2: npt.NDArray) -> float :
-    return np.sqrt(np.power(p1[0] - p2[0], 2) + np.power(p1[1] - p2[1], 2))
-
-def getDistanceMatrix(pl1: npt.NDArray, pl2: npt.NDArray) -> npt.NDArray :
-    distanceMatrix : npt.NDArray = np.ones((pl1.shape[0], pl2.shape[0]), dtype=float) * -1.0
-
-    for i,p1 in enumerate(pl1) :
-        for j,p2 in enumerate(pl2) :
-            distanceMatrix[i,j] = euclideanDistance(p1, p2)
-
-    return distanceMatrix
-
-def getPolylines() -> npt.NDArray :
-    # pl1 : npt.NDArray = np.array([[0,0], [1,1], [2,2], [3,3], [4,4]])
-    # pl2 : npt.NDArray = np.array([[0,0], [1,2], [2,3], [3,1], [4,4]])
-    n = random.randint(4, 10)
+def getPolylines(n : int= random.randint(4, 10), m=0) -> Tuple[npt.NDArray, npt.NDArray] :
+    if not m :
+        m += n
 
     pl1 : npt.NDArray = np.random.rand(n,2).round(4)
-    pl2 : npt.NDArray = np.random.rand(n,2).round(4)
+    pl2 : npt.NDArray = np.random.rand(m,2).round(4)
 
     return pl1, pl2
 
-def getSinusoidPolylines() -> Tuple[npt.NDArray] :
-    n = 6#random.randint(4, 10)
+def getSinusoidPolylines(n : int= random.randint(4, 10), m=0) -> Tuple[npt.NDArray, npt.NDArray] :
+    if not m :
+        m += n
     A = random.random() * 10
     w = random.random() * 6.28
 
     pl1 : npt.NDArray = np.array([[i, A*np.sin(i*w) + random.random()] for i in range(1,n)]).round(4)
-    pl2 : npt.NDArray = np.array([[i, A*np.sin(i*w) + random.random()]for i in range(1,n)]).round(4)
-    pl3 : npt.NDArray = np.array([[i, A*np.sin(i*w) + (random.random()*3)]for i in range(1,n)]).round(4)
+    pl2 : npt.NDArray = np.array([[i, A*np.sin(i*w) + random.random()]for i in range(1,m)]).round(4)
 
-    return pl1, pl2, pl3
+    return pl1, pl2
 
-def show(pl1: npt.NDArray, pl2: npt.NDArray, title: int = 0) :
+def show(pl1: npt.NDArray, pl2: npt.NDArray, title: str = "") :
     xpl1 = [p for p,_ in pl1]
     ypl1 = [p for _,p in pl1]
     plt.plot(xpl1, ypl1)

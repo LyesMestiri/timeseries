@@ -1,7 +1,33 @@
 import numpy as np
 import numpy.typing as npt
+from typing import Tuple
 
-from utils import getDistanceMatrix
+from scipy.spatial.distance import euclidean
+
+from frechetdist import frdist
+from fastdtw import fastdtw
+
+
+# LIBRARY DISTANCES
+def libFrechetDistance(pl1: npt.NDArray, pl2: npt.NDArray) -> float :
+    return frdist(pl1, pl2)
+
+def libDTWDistance(pl1: npt.NDArray, pl2: npt.NDArray) -> float :
+    return fastdtw(pl1, pl2, dist=euclidean)[0]/max(len(pl1), len(pl2))
+
+
+# FRECHET DISTANCE
+def euclideanDistance(p1: npt.NDArray, p2: npt.NDArray) -> float :
+    return np.sqrt(np.power(p1[0] - p2[0], 2) + np.power(p1[1] - p2[1], 2))
+
+def getDistanceMatrix(pl1: npt.NDArray, pl2: npt.NDArray) -> npt.NDArray :
+    distanceMatrix : npt.NDArray = np.ones((pl1.shape[0], pl2.shape[0]), dtype=float) * -1.0
+
+    for i,p1 in enumerate(pl1) :
+        for j,p2 in enumerate(pl2) :
+            distanceMatrix[i,j] = euclideanDistance(p1, p2)
+
+    return distanceMatrix
 
 def frechetDistance(pl1 : npt.NDArray, pl2 : npt.NDArray) -> float :
     l1 : int = pl1.shape[0]
@@ -27,6 +53,8 @@ def frechetDistance(pl1 : npt.NDArray, pl2 : npt.NDArray) -> float :
 
     return fm[l1-1, l2-1]
 
+
+# DYNAMIC WARPING DISTANCE
 def initDynamicTimeWarpingMatrix(dm : npt.NDArray, l1 : int, l2 : int) -> npt.NDArray :
     # Init Dynamic Time Warping Matrix
     dtwm : npt.NDArray = np.ones((l1, l2), dtype=float) * np.inf
@@ -57,6 +85,8 @@ def dynamicTimeWarpingDistance(pl1 : npt.NDArray, pl2 : npt.NDArray) -> float :
 
     return dtwm[l1-1, l2-1]/max(l1,l2)
 
+
+#K-DYNAMIC WARPING DISTANCE
 def initKDynamicTimeWarpingMatrix(dm : npt.NDArray, dtwm : npt.NDArray, l1 : int, l2 : int) -> npt.NDArray :
     # Init k-Dynamic Time Warping matrix 
     kdtwm : npt.NDArray = np.ones((l1, l2, 3), dtype=float) * -1
@@ -71,7 +101,7 @@ def initKDynamicTimeWarpingMatrix(dm : npt.NDArray, dtwm : npt.NDArray, l1 : int
 
     return kdtwm
 
-def init_1_1(dm : npt.NDArray, dtwm : npt.NDArray, kdtwm : npt.NDArray) -> npt.NDArray :
+def init_1_1(dm : npt.NDArray, dtwm : npt.NDArray, kdtwm : npt.NDArray) -> Tuple[npt.NDArray, npt.NDArray] :
     # Init dtwm[1,1]
     tmpArray = np.array([dtwm[0, 0], dtwm[1, 0], dtwm[0, 1]])
     minIdx = np.argmin(tmpArray)
@@ -87,7 +117,7 @@ def init_1_1(dm : npt.NDArray, dtwm : npt.NDArray, kdtwm : npt.NDArray) -> npt.N
     
     return dtwm, kdtwm
 
-def initSecondLineCol(dm : npt.NDArray, dtwm : npt.NDArray, kdtwm : npt.NDArray, l1 : int, l2 : int) -> npt.NDArray :
+def initSecondLineCol(dm : npt.NDArray, dtwm : npt.NDArray, kdtwm : npt.NDArray, l1 : int, l2 : int) -> Tuple[npt.NDArray, npt.NDArray] :
     # Init dtwm[1, 2] & kdtwm[1, 2]
     if (dtwm[0, 2] < dtwm[1, 1]) :
         dtwm[1, 2] = dtwm[0, 2] + dm[1, 2]

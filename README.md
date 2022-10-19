@@ -26,3 +26,22 @@ Pour compiler l'image docker depuis le dossier 'timeseries/' exécuter la comman
 Pour lancer l'image docker exécuter la commande :
 
     docker run timeseries
+
+## Structure
+Le code est contenu dans le dossier '/app' :
+
+|Fichiers|Description|
+|--------|-----------|
+|main.py|Test les modèles|
+|models.py|Outils de distances pour les séries temporelles|
+|compare.py|Fonctions permettant de comparer les résultats et temps d'exécutions|
+|utils.py|Diverses fonctions utilitaires| 
+
+
+
+## Interface
+
+Pour lancer le logiciel, exécuter la commande
+
+    python main.py
+
